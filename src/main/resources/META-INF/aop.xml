@@ -1,0 +1,351 @@
+<aspectj>
+	<aspects>
+
+ 		<!-- Business Methods START -->
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.SPRING"
+				extends="net.rationalminds.Aspects.BaseAspectOnePoint">
+				<pointcut name="pointCut"
+					expression="execution(@org.springframework.web.bind.annotation.RequestMapping * *.*(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.JAXRS"
+				extends="net.rationalminds.Aspects.BaseAspectOnePoint">
+				<pointcut name="pointCut"
+					expression="execution(@javax.ws.rs.Path * *.*(..)) || (within(@javax.ws.rs.Path *) &amp;&amp; execution(public * *(..)))" />
+			</concrete-aspect>
+		</aspects>
+		
+		
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.STRUTS_1"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(org.apache.struts.action.Action+) &amp;&amp; execution(org.apache.struts.action.ActionForward *.execute(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.STRUTS_2"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="execution(public void org.apache.struts2.dispatcher.ng.ExecuteOperations.executeAction(..))" />
+					<!-- org.apache.struts2.dispatcher.FilterDispatcher will be covered from filter aspect -->
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+		<concrete-aspect name="AGENT.BIZ.JSF"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(com.sun.faces.context.FacesContextFactoryImpl || com.sun.faces.context.InjectionFacesContextFactory) &amp;&amp; execution(* *.getFacesContext(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.VELOCITY"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(org.apache.velocity.tools.view.VelocityViewServlet+ || org.apache.velocity.servlet.VelocityServlet+) &amp;&amp; execution(* handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.apache.velocity.context.Context))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.APACHE_CXF_RS"
+				extends="net.rationalminds.Aspects.discovery.web.CXFDiscovery">
+				<pointcut name="pointCut"
+					expression="call(void onMessage(org.apache.cxf.message.Message)) &amp;&amp; target(org.apache.cxf.transport.ChainInitiationObserver)" />
+			</concrete-aspect>
+		</aspects>
+		
+		<!-- Business Methods END -->
+		
+		<aspects>
+			<concrete-aspect name="AGENT.WEB.JERSEYCLIENT"
+				extends="net.rationalminds.Aspects.discovery.outgoing.jersey.JerseyRequestCapture">
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.WEB.JETTY"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(org.eclipse.jetty.server.Handler+) &amp;&amp; execution(* *.handle(String,org.eclipse.jetty.server.Request,javax.servlet.http.HttpServletRequest,..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.WEB.TOMCAT"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="call(void org.apache.catalina.core.ApplicationFilterChain.doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse))" />
+			</concrete-aspect>
+		</aspects>
+                
+         <aspects>
+			<concrete-aspect name="AGENT.WEB.SERVLET"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(javax.servlet.http.HttpServlet+) 
+								&amp;&amp; !within(javax.servlet.jsp.HttpJspPage+)
+								&amp;&amp; !within(org.apache.jasper.servlet.JspServlet+) 
+								&amp;&amp; (execution(* *.doDelete(..)) 
+								||  execution(* *.doGet(..))
+								||  execution(* *.doPost(..))
+								||  execution(* *.doPut(..))
+								||  execution(* *.doTrace(..))
+								|| execution(* *.service(..)))
+								&amp;&amp;  !within(javax..*)" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.WEB.FILTER"
+				extends="net.rationalminds.Aspects.HttpRequestAbstractAspect">
+				<pointcut name="pointCut"
+					expression="within(javax.servlet.Filter+) &amp;&amp; execution(* doFilter(..))" />
+			</concrete-aspect>
+		</aspects>
+<!--		
+		<aspects>
+			<concrete-aspect name="AGENT.WEB.HTTP"
+				extends="net.rationalminds.transaction.web.HttpPropagation">
+			</concrete-aspect>
+		</aspects>
+
+
+-->
+		<aspects>
+			<concrete-aspect name="AGENT.JMS.PRODUCER"
+				extends="net.rationalminds.Aspects.discovery.jms.JMSSenderDiscovery">
+			</concrete-aspect>
+		</aspects>	
+		
+		<aspects>
+			<concrete-aspect name="AGENT.JMS.CONSUMER"
+				extends="net.rationalminds.Aspects.discovery.jms.JMSRecieverDiscovery">
+			</concrete-aspect>
+		</aspects>		
+
+		<aspects>
+			<concrete-aspect name="AGENT.JAXRPC_WS"
+				extends="net.rationalminds.Aspects.discovery.web.JaxRPCWebServiceDiscovery">
+			</concrete-aspect>
+		</aspects>
+
+		<aspects>
+			<concrete-aspect name="AGENT.JAX_WS"
+				extends="net.rationalminds.Aspects.discovery.web.JaxWSWebMetod">
+			</concrete-aspect>
+		</aspects>
+
+		<aspects>
+			<concrete-aspect name="AGENT.BIZ.JAX_WS_BINDING"
+				extends="net.rationalminds.Aspects.discovery.web.JaxWsWebServiceDiscovery">
+			</concrete-aspect>
+		</aspects>
+	
+	<aspects>
+			<concrete-aspect name="AGENT.JDBC"
+				extends="net.rationalminds.Aspects.discovery.jdbc.JDBCCallDiscovery">
+				<pointcut name="pointCut"
+					expression="(call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String)) 
+						     || call(java.sql.CallableStatement java.sql.Connection.prepareCall(String))
+						     || call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String, String[]))
+						     || call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String, int))
+						     || call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String, int[]))
+						     || call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String, int, int))
+						     || call(java.sql.PreparedStatement java.sql.Connection.prepareStatement(String, int, int, int))
+						     || call(java.sql.CallableStatement java.sql.Connection.prepareCall(String, int, int))
+						     || call(java.sql.CallableStatement java.sql.Connection.prepareCall(String, int, int, int))
+						     || call(java.sql.ResultSet java.sql.Statement.executeQuery(String))
+						     || call(boolean java.sql.PreparedStatement.execute())
+						     || call(boolean java.sql.CallableStatement.execute())
+						     || call(int java.sql.Statement.executeUpdate(String))
+						     || call(int java.sql.Statement.executeUpdate(String, int))
+						     || call(int java.sql.Statement.executeUpdate(String, int[]))
+						     || call(int java.sql.Statement.executeUpdate(String, String[]))
+						     || call(boolean java.sql.Statement.execute(String))
+						     || call(boolean java.sql.Statement.execute(String,int))
+						     || call(boolean java.sql.Statement.execute(String,int[]))
+						     || call(boolean java.sql.Statement.execute(String,String[]))
+						     || call(void java.sql.Statement.addBatch(String))
+						     )
+						     &amp;&amp; !call(String java.sql.DatabaseMetaData+.*(..))
+						     &amp;&amp; !within(com.e2e.Aspects.discovery.jdbc.JDBCCallDiscovery)" />
+			</concrete-aspect>
+		</aspects>
+
+		<!-- <aspects> <concrete-aspect name="AGENT.DB_CONNECTION_MONITOR" extends="net.rationalminds.Aspects.discovery.jdbc.DBConnectionMonitor"> 
+			</concrete-aspect> </aspects> <aspects> <concrete-aspect name="AGENT.DB_STATEMENT_MONITOR" 
+			extends="net.rationalminds.Aspects.discovery.jdbc.StatementMonitor"> </concrete-aspect> 
+			</aspects> <aspects> <concrete-aspect name="AGENT.DB_TRANSACTION_MONITOR" 
+			extends="net.rationalminds.Aspects.discovery.jdbc.TransactionMonitor"> </concrete-aspect> 
+			</aspects> -->
+	
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.APACHEHTTP3"
+				extends="net.rationalminds.Aspects.discovery.outgoing.apachehttp3.ApacheHttp3">
+				<pointcut name="pointCut"
+					expression="within(org.apache.commons.httpclient.HttpClient+)  &amp;&amp; execution(* *.executeMethod(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.APACHEHTTP4"
+				extends="net.rationalminds.Aspects.discovery.outgoing.apachehttp4.ApacheHttp4">
+				<pointcut name="pointCut"
+					expression="within(org.apache.http.client.HttpClient+) &amp;&amp; execution(* *.execute(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.CXF.WEBCLIENT"
+				extends="net.rationalminds.Aspects.discovery.outgoing.cxf.WebClient">
+				<pointcut name="pointCut"
+					expression="within(org.apache.cxf.jaxrs.client.Client+ || javax.ws.rs.client.ClientRequestContext+) &amp;&amp; execution(* *.getHeaders())" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.JAXRSCLIENT"
+				extends="net.rationalminds.Aspects.discovery.outgoing.cxf.WebClient">
+				<pointcut name="pointCut"
+					expression="within(javax.ws.rs.client.ClientRequestContext+) &amp;&amp; execution(* *.getHeaders())" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.CXF.INTERCEPT"
+				extends="net.rationalminds.Aspects.discovery.outgoing.cxf.Interceptor">
+				<pointcut name="pointCut"
+					expression="within(org.apache.cxf.interceptor.MessageSenderInterceptor+) &amp;&amp; execution(* *.handleMessage(org.apache.cxf.message.Message))" />
+			</concrete-aspect>
+		</aspects>
+		
+		<aspects>
+			<concrete-aspect name="AGENT.CLIENT.JERSEY"
+				extends="net.rationalminds.Aspects.discovery.outgoing.jersey.Jersey">
+				<pointcut name="pointCut"
+					expression="within(org.glassfish.jersey.message.internal.OutboundMessageContext+) &amp;&amp; execution(* *.getHeaders(..))" />
+			</concrete-aspect>
+		</aspects>
+		
+	</aspects>
+	<!-- <include within="java.net.*"/> <include within="java.net.URLConnection+"/> -->
+	<weaver
+		options="-nowarn  -proceedOnError -Xlintfile:META-INF/Xlint.properties -Xset:fastWeaving=true  -Xset:weaveJavaPackages=true -Xset:weaveJavaxPackages=true" >
+		<!-- -showWeaveInfo -verbose -debug -nowarn  -->
+		<include within="AGENT.*" />
+		<include within="javax.mail.Transport+" />
+		<include within="javax.sql.DataSource+" />
+		<include within="java.sql.Driver+" />
+		<include within="java.sql.DriverManager+" />
+		<include within="java.sql.Connection+" />
+		<include within="java.sql.Statement+" />
+		<include within="java.sql.ResultSet+" />
+		<include within="java.rmi.Remote+" />
+		
+		<include within="javax.servlet.Servlet+" />
+		<include within="javax.servlet.Filter+" />
+		<include within="javax.servlet.ServletContextListener+" />
+		<include within="javax.servlet.ServletRequestListener+" />
+		<include within="javax.servlet.http.HttpServletRequest+" />
+		<include within="javax.servlet.ServletContext+" />
+		<include within="javax.ejb.EnterpriseBean+" />
+		<include within="javax.naming.Context+" />
+		<include within="javax.jms.MessageProducer+" />
+		<include within="javax.jms.QueueSender+" />
+		<include within="javax.jms.TopicPublisher+" />
+		<include within="weblogic.jms.client.JMSProducer+" />
+		<include within="org.apache.commons.httpclient.*" />
+		<include within="org.springframework.web.servlet.mvc.Controller+" />
+		<include within="uk.ltd.getahead.dwr.impl.ExecuteQuery" />
+		<include within="uk.ltd.getahead.dwr.ExecuteQuery" />
+		<include within="org.directwebremoting.impl.ExecuteAjaxFilter" />
+		<include within="org.apache.struts.action.Action+" />
+		<include within="com.sshtools.j2ssh.SftpClient+" />
+		<include within="org.apache.commons.net.ftp.FTPClient+" />
+		<include within="org.apache.commons.net.SocketClient+" />
+		<include within="javax.xml.soap.SOAPConnection+" />
+		<include within="com.sleepycat.db.Database+" />
+		<include within="com.sleepycat.db.internal.Db+" />
+		<include within="com.sleepycat.db.DatabaseException" />
+		<include within="com.sleepycat.je.Database+" />
+		<include within="com.sleepycat.dbxml.XmlContainer+" />
+		<include within="com.sleepycat.dbxml.XmlQueryExpression+" />
+		<include within="com.sleepycat.dbxml.XmlResults+" />
+		<include within="com.sleepycat.dbxml.XmlManager+" />
+		<include within="net.jxta.socket.Jxta*Socket+" />
+		<include within="net.jxta.pipe.PipeMsgListener+" />
+		<include within="com.google.gwt.user.client.rpc.RemoteService+" />
+		<include within="javax.portlet.Portlet+" />
+		<include within="com.epicentric.portalbeans.PortalBean+" />
+		<include within="net.rationalminds.util.*" />
+		<include within="com.epicentric.portalbeans.beans.jspbean.JSPView+" />
+		<include within="org.springframework.web.bind.annotation.RequestMapping"/>
+		
+
+
+		<exclude within="edu.emory.mathcs.backport..*" />
+		<exclude within="*..*CGLIB$*" />
+		<exclude within="*..*$Proxy*" />
+		<exclude within="java.lang.reflect.Proxy+" />
+		<!-- exclude within="org.apache.catalina..* &amp;&amp; !org.apache.catalina.servlets..*" /-->
+		<exclude within="org.apache.tomcat..*  &amp;&amp; !org.apache.tomcat.dbcp..*" />
+		<exclude within="org.apache.jk..*" />
+		<exclude within="org.apache.commons.collections..*" />
+		<exclude within="org.apache.commons.logging..*" />
+		<exclude within="org.apache.naming..*" />
+		<exclude within="org.apache.log4j..*" />
+		<exclude within="org.apache.taglibs..*" />
+		<exclude within="org.apache.tools..*" />
+		<exclude within="org.apache.velocity..*" />
+		<exclude within="org.apache.xerces..*" />
+		<exclude within="org.apache.xmlbeans..*" />
+		<!-- exclude within="org.hibernate..*" /-->
+		<exclude within="org.springframework.aop..*" />
+		<exclude within="org.springframework.beans..*" />
+		<exclude within="org.springframework.context..*" />
+		<exclude within="org.springframework.jmx..*" />
+		<exclude within="net.sf.hibernate..*" />
+		<exclude within="weblogic.jdbc..*" />
+		<exclude within="weblogic.servlet..*" />
+		<exclude within="weblogic.common..*" />
+		<exclude within="weblogic.jndi..*" />
+		<exclude within="weblogic.apache..*" />
+		<exclude within="weblogic.application..*" />
+		<exclude within="weblogic.deploy..*" />
+		<exclude within="weblogic.diagnostics..*" />
+		<exclude within="weblogic.ejb..*" />
+		<exclude within="weblogic.j2ee.descriptor..*" />
+		<exclude within="weblogic.management..*" />
+		<exclude within="weblogic.messaging..*" />
+		<exclude within="weblogic.rmi..*" />
+		<exclude within="weblogic.security..*" />
+		<exclude within="weblogic.store..*" />
+		<exclude within="weblogic.transaction..*" />
+		<exclude within="weblogic.utils..*" />
+		<exclude within="com.bea.common..*" />
+		<exclude within="com.bea.security..*" />
+		<exclude within="com.bea.staxb..*" />
+		<exclude within="com.bea.xbean..*" />
+		<exclude within="com.bea.xml..*" />
+		<exclude within="com.rsa..*" />
+		<exclude within="com.certicom..*" />
+		<exclude within="com.octetstring..*" />
+		<exclude within="org.jboss.aop..*" />
+		<exclude within="org.jboss.web.tomcat..*" />
+		<exclude within="org.jboss.web.management..*" />
+		<exclude within="org.jboss.web.monitor..*" />
+		<exclude
+			within="com.ibm..* &amp;&amp; !com.ibm.jdbcx..* &amp;&amp; !com.ibm.ws..* &amp;&amp; !com.ibm.websphere.security..* &amp;&amp; !com.ibm.websphere.cluster..* &amp;&amp; !com.ibm.websphere.ws.wlm..* &amp;&amp; !com.ibm.ejs..*" />
+		<exclude within="org.eclipse..*" />
+		<exclude within="org.osgi..*" />
+		<!-- avoid deadlock bug with AspectJ LTW, e.g., see GLASSBOX-117 -->
+		<exclude within="java.io.ObjectInputStream+" />
+	</weaver>
+</aspectj>
+
