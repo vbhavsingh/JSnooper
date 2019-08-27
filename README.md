@@ -9,7 +9,7 @@ The mechnism works as following for any JVM installation:
 
 One important point w.r.t ThreadLocal is that application servers like Weblogic and Websphere provide special context holders, which is used by the agent if deployed on relevant server instead of ThreadLocal.
 
-The agent is written in AspectJ and is plugged at runtime in JVM using JVMTI. The supported Java based transport mechanisms are listed as below.
+The agent is written in AspectJ and is plugged at runtime in JVM using JVMTI. No code change is required in host application.  The supported Java based transport mechanisms are listed as below.
 
 1. Spring 
 2. JAXRS
@@ -35,3 +35,5 @@ Jsnooper collects following transaction iinformation as part of its monitoring.
 8. Local IP address 
 9. Stacktrace in case of exception
 10. Key value map of data objects from arguments and return of method.
+
+The data collection mechanism is kept seperate of main application transaction thread, to minimize any impact in response time of the application. The collected data is buffered in an isolated data structure inside applications memory space. This data strcture has upper bound in terms on number of elements maintained in buffer. In case of buffer overflow, data collection is stopped till buffer has space for new elements. This mechanism provides safeguard and eliminates chances of agent to use more than intended shared resources.
