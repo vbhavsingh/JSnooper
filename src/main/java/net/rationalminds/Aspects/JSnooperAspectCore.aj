@@ -189,7 +189,6 @@ public abstract aspect JSnooperAspectCore {
 	 * @param resetTime
 	 */
 	private void collectData(String action, String success, EndpointModel epm) {
-		System.out.println("``````````````````````\nhello\n`````````````````````");
 		if (dataSet == null) {
 			dataSet = new DataCollectionModel();
 		}
