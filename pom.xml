@@ -9,10 +9,14 @@
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<java-version>1.7</java-version>
-		<org.aspectj-version>1.8.5</org.aspectj-version>
+		<maven.compiler.source>10</maven.compiler.source>
+		<maven.compiler.target>10</maven.compiler.target>
+		<java-version>10</java-version>
+		<org.aspectj-version>1.9.2</org.aspectj-version>
+		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+		<manifest.version>1.0</manifest.version>
+		<Bundle-ManifestVersion>2.0</Bundle-ManifestVersion>
 	</properties>
 
 	<dependencies>
@@ -70,6 +74,32 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<configuration>
+				  <archive>
+		    			<manifestEntries>
+							<Manifest-Version>${manifest.version}</Manifest-Version>
+							<Build-Type>Thin Agent</Build-Type>
+							<Built-By>www.rationalminds.net</Built-By>
+							<Specification-Title>AspectJ Weaver Classes</Specification-Title>
+							<Specification-Version>${org.aspectj-version}</Specification-Version>
+							<Specification-Vendor>aspectj.org</Specification-Vendor>
+							<Implementation-Title>org.aspectj.weaver</Implementation-Title>
+							<Implementation-Version>${org.aspectj-version}</Implementation-Version>
+							<Implementation-Vendor>aspectj.org</Implementation-Vendor>
+							<Premain-Class>net.rationalminds.startup.Monitor</Premain-Class>
+							<Can-Redefine-Classes>true</Can-Redefine-Classes>
+							<Bundle-ManifestVersion>${Bundle-ManifestVersion}</Bundle-ManifestVersion>
+							<Bundle-Name>${project.name}</Bundle-Name>
+							<Bundle-SymbolicName>JSnooper-Client</Bundle-SymbolicName>
+							<Version>${project.Version}</Version>
+						</manifestEntries>
+				  </archive>
+				</configuration>
+    		</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -80,6 +110,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>${project.artifactId}-${project.version}-full</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
 					<execution>
@@ -91,7 +123,9 @@
 						<configuration>
 							<archive>
 								<manifestEntries>
-									<Manifest-Version>1.0</Manifest-Version>
+									<Manifest-Version>${manifest.version}</Manifest-Version>
+									<Build-Type>Thick Agent. Has embeded aspectrt.jar</Build-Type>
+									<Built-By>www.rationalminds.net</Built-By>
 									<Specification-Title>AspectJ Weaver Classes</Specification-Title>
 									<Specification-Version>${org.aspectj-version}</Specification-Version>
 									<Specification-Vendor>aspectj.org</Specification-Vendor>
@@ -100,10 +134,10 @@
 									<Implementation-Vendor>aspectj.org</Implementation-Vendor>
 									<Premain-Class>net.rationalminds.startup.Monitor</Premain-Class>
 									<Can-Redefine-Classes>true</Can-Redefine-Classes>
-									<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+									<Bundle-ManifestVersion>${Bundle-ManifestVersion}</Bundle-ManifestVersion>
 									<Bundle-Name>${project.name}</Bundle-Name>
 									<Bundle-SymbolicName>JSnooper-Client</Bundle-SymbolicName>
-									<Version>${Version}</Version>
+									<Version>${project.Version}</Version>
 								</manifestEntries>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -114,7 +148,25 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.11</version>
+				<version>${aspectj-maven-plugin.version}</version>
+				 <configuration>
+                        <showWeaveInfo>true</showWeaveInfo>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.source}</target>
+                        <Xlint>ignore</Xlint>
+                        <complianceLevel>${maven.compiler.source}</complianceLevel>
+                        <encoding>UTF-8</encoding>
+                        <verbose>true</verbose>
+                        <outxml>false</outxml>
+				         <sources>
+				            <source>
+				              <basedir>src/main/java</basedir>
+				              <includes>
+				                <include>**/*.aj</include>
+				              </includes>
+				            </source>
+				          </sources>
+                    </configuration>
 				<dependencies>
 					<!-- You must use Maven 2.0.9 or above or these are ignored (see MNG-2972) -->
 
@@ -143,11 +195,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<outxml>false</outxml>
-					<source>${java-version}</source>
-					<!-- <target>${java-version}</target> -->
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
